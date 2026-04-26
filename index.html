@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Status | JANKOS</title>
+    
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/jankosdeutschland/offsite/main/Jankos%20Logo%20(1).png">
+
     <style>
         body { 
             font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
@@ -105,27 +108,25 @@
         <details>
             <summary>▶ Technische Details</summary>
             <div class="error-box" id="errorBox">
-        [SYSTEM_REPORT]<br>
-        Status: 522 Connection Timeout<br>
-        Service: JANKOS-Main-Node-01<br>
-        Trace-ID: <span id="traceId">Laden...</span><br>
-        Client-IP: ID_IP_DATA<br>
-        Client-Loc: ID_LOC_DATA<br>
-    --------------------------------------<br>
-    LOG: <span id="spinner">|</span> Waiting for origin response...<br>
-    LOG: Re-routing traffic to failover...
-        </div>
+                [SYSTEM_REPORT]<br>
+                Status: 522 Connection Timeout<br>
+                Service: JANKOS-Main-Node-01<br>
+                Trace-ID: <span id="traceId">Laden...</span><br>
+                Client-IP: ID_IP_DATA<br>
+                Client-Loc: ID_LOC_DATA<br>
+                --------------------------------------<br>
+                LOG: <span id="spinner">|</span> Waiting for origin response...<br>
+                LOG: Re-routing traffic to failover...
+            </div>
         </details>
     </div>
 
     <script>
-        // 1. Trace-ID generieren (ohne PLZ)
+        // 1. Trace-ID generieren
         const randomHex = Math.floor(Math.random()*65535).toString(16).toUpperCase();
         document.getElementById('traceId').textContent = "JNK-WR-" + randomHex;
 
-       
-
-        // 3. Spinner Animation
+        // 2. Spinner Animation
         const spinner = document.getElementById('spinner');
         const chars = ['|', '/', '-', '\\'];
         let i = 0;
@@ -134,7 +135,7 @@
             i = (i + 1) % chars.length;
         }, 250);
 
-        // 4. Countdown Logik
+        // 3. Countdown Logik
         const btn = document.getElementById('reconnectBtn');
         const msg = document.getElementById('redirect-msg');
         const countSpan = document.getElementById('countdown');
