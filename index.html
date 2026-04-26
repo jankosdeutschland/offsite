@@ -30,9 +30,8 @@
             max-width: 220px;
             height: auto;
             margin-bottom: 25px;
-            /* Ein kleines bisschen nach links verschoben wie gewünscht */
             position: relative;
-            left: -5px; 
+            left: -8px; 
         }
 
         h1 { color: #000880; margin-bottom: 12px; font-size: 26px; }
@@ -53,26 +52,38 @@
             background-color: #0012ff;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 24px;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
             width: 100%;
             margin-bottom: 15px;
         }
         .btn-reconnect:hover { background-color: #0008cc; }
 
         #redirect-msg {
-            font-size: 14px;
+            font-size: 15px;
             color: #2563eb;
             margin-top: 10px;
             display: none;
+            font-weight: 500;
         }
 
-        details { text-align: left; background: #f9fafb; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid #e5e7eb; margin-top: 20px;}
+        details { text-align: left; background: #f9fafb; border-radius: 12px; padding: 12px; cursor: pointer; border: 1px solid #e5e7eb; margin-top: 20px;}
         summary { font-size: 14px; color: #6b7280; font-weight: 600; list-style: none; outline: none; }
-        .error-box { margin-top: 10px; font-family: monospace; background: #2d2d2d; color: #39ff14; padding: 12px; border-radius: 8px; font-size: 12px; }
+        
+        .error-box { 
+            margin-top: 10px; 
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
+            background: #1a1a1a; 
+            color: #39ff14; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-size: 12px; 
+            line-height: 1.5; 
+            border-left: 3px solid #333;
+        }
     </style>
 </head>
 <body>
@@ -81,27 +92,59 @@
         <img src="https://raw.githubusercontent.com/jankosdeutschland/offsite/main/Jankos%20Logo%20(1).png" alt="JANKOS Logo" class="logo">
         
         <h1>Gleich wieder da!</h1>
-        <p>Wir haben gerade ein technisches Problem oder führen Wartungsarbeiten durch.</p>
+        <p>Wir haben gerade ein technisches Problem oder führen Wartungsarbeiten durch. JANKOS ist in Kürze wieder mit vollem Service für Sie erreichbar.</p>
         
         <div class="status status-down">Server Offline</div>
 
-        <button class="btn-reconnect" id="reconnectBtn">Verbindung erneut prüfen</button>
+        <button class="btn-reconnect" id="reconnectBtn">Verbindung prüfen & weiterleiten</button>
         
         <div id="redirect-msg">
-            Prüfung läuft... Seite wird in <span id="countdown">3</span>s neu geladen.
+            Prüfung erfolgreich. Sie werden in <span id="countdown">3</span>s weitergeleitet...
         </div>
 
         <details>
             <summary>▶ Technische Details</summary>
-            <div class="error-box">
-                Error-Code: 522<br>
-                Status: Connection Timeout<br>
-                Service: JANKOS Web-Entry
+            <div class="error-box" id="errorBox">
+                [SYSTEM_REPORT]<br>
+                Status: 522 Connection Timeout<br>
+                Service: JANKOS-Main-Node-01<br>
+                Trace-ID: <span id="traceId">Laden...</span><br>
+                Client-IP: <span id="clientIp">Detecting...</span><br>
+                Client-Loc: <span id="clientLoc">Detecting...</span><br>
+                --------------------------------------<br>
+                LOG: <span id="spinner">|</span> Waiting for origin response...<br>
+                LOG: Re-routing traffic to failover...
             </div>
         </details>
     </div>
 
     <script>
+        // 1. Trace-ID generieren (ohne PLZ)
+        const randomHex = Math.floor(Math.random()*65535).toString(16).toUpperCase();
+        document.getElementById('traceId').textContent = "JNK-WR-" + randomHex;
+
+        // 2. IP und Standort abrufen
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('clientIp').textContent = data.ip;
+                document.getElementById('clientLoc').textContent = data.city + ", " + data.country_name;
+            })
+            .catch(() => {
+                document.getElementById('clientIp').textContent = "Unknown";
+                document.getElementById('clientLoc').textContent = "Secure Node";
+            });
+
+        // 3. Spinner Animation
+        const spinner = document.getElementById('spinner');
+        const chars = ['|', '/', '-', '\\'];
+        let i = 0;
+        setInterval(() => {
+            spinner.textContent = chars[i];
+            i = (i + 1) % chars.length;
+        }, 250);
+
+        // 4. Countdown Logik
         const btn = document.getElementById('reconnectBtn');
         const msg = document.getElementById('redirect-msg');
         const countSpan = document.getElementById('countdown');
@@ -109,15 +152,12 @@
         btn.addEventListener('click', () => {
             btn.style.display = 'none'; 
             msg.style.display = 'block'; 
-            
             let timeLeft = 3;
             const timer = setInterval(() => {
                 timeLeft--;
                 countSpan.textContent = timeLeft;
-                
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    // Seite einfach neu laden
                     location.reload();
                 }
             }, 1000);
