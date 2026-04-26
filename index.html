@@ -32,17 +32,8 @@
             margin-bottom: 25px;
         }
 
-        h1 { 
-            color: #000880;
-            margin-bottom: 12px;
-            font-size: 26px;
-        }
-
-        p { 
-            color: #4b5563; 
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
+        h1 { color: #000880; margin-bottom: 12px; font-size: 26px; }
+        p { color: #4b5563; line-height: 1.6; margin-bottom: 25px; }
 
         /* Status Buttons */
         .status {
@@ -53,58 +44,35 @@
             font-weight: 600;
             margin-bottom: 20px;
         }
+        .status-update { background-color: #1d7e1d; color: white; }
+        .status-down { background-color: #b91c1c; color: white; }
 
-        /* Dein grüner Update-Status */
-        .status-update {
-            background-color: #1d7e1d;
+        /* Der neue Reconnect-Button */
+        .btn-reconnect {
+            background-color: #0012ff;
             color: white;
-        }
-
-        /* Der neue rote Server-Down Status */
-        .status-down {
-            background-color: #b91c1c;
-            color: white;
-        }
-
-        /* Ausklappbarer Bereich (Details) */
-        details {
-            text-align: left;
-            background: #f9fafb;
+            border: none;
+            padding: 12px 24px;
             border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            border: 1px solid #e5e7eb;
-        }
-
-        summary {
-            font-size: 14px;
-            color: #6b7280;
             font-weight: 600;
-            outline: none;
-            list-style: none; /* Versteckt Standard-Pfeil */
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            margin-bottom: 15px;
         }
+        .btn-reconnect:hover { background-color: #0008cc; }
 
-        summary::-webkit-details-marker { display: none; } /* Safari Support */
-
-        summary::before {
-            content: "▶ ";
-            font-size: 10px;
-        }
-
-        details[open] summary::before {
-            content: "▼ ";
-        }
-
-        .error-box {
+        #redirect-msg {
+            font-size: 14px;
+            color: #2563eb;
             margin-top: 10px;
-            font-family: monospace;
-            background: #2d2d2d;
-            color: #39ff14; /* Matrix-Grün für den Code-Look */
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            overflow-x: auto;
+            display: none; /* Erst beim Klick zeigen */
         }
+
+        /* Details & Error Box */
+        details { text-align: left; background: #f9fafb; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid #e5e7eb; margin-top: 20px;}
+        summary { font-size: 14px; color: #6b7280; font-weight: 600; list-style: none; outline: none; }
+        .error-box { margin-top: 10px; font-family: monospace; background: #2d2d2d; color: #39ff14; padding: 12px; border-radius: 8px; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -113,19 +81,51 @@
         <img src="https://raw.githubusercontent.com/jankosdeutschland/offsite/main/Jankos%20Logo%20(1).png" alt="JANKOS Logo" class="logo">
         
         <h1>Gleich wieder da!</h1>
-        <p>Wir haben gerade ein technisches Problem oder führen Wartungsarbeiten durch. Wir sind bald wieder für dich da.</p>
+        <p>Wir haben gerade ein technisches Problem oder führen Wartungsarbeiten durch.</p>
         
         <div class="status status-down">Server Offline</div>
 
+        <button class="btn-reconnect" id="reconnectBtn">Verbindung erneut prüfen</button>
+        
+        <div id="redirect-msg">
+            Du wirst in <span id="countdown">3</span> Sekunden weitergeleitet...<br>
+            <small>(Falls nichts passiert, <a href="https://jankos.ch" id="manualLink" style="color: #0012ff; font-weight: bold;">hier drücken</a>)</small>
+        </div>
+
         <details>
-            <summary>Technische Details anzeigen</summary>
+            <summary>▶ Technische Details</summary>
             <div class="error-box">
                 Error-Code: 522<br>
                 Status: Connection Timeout<br>
-                Server: JANKOS-Main-Node
+                Service: JANKOS Web-Entry
             </div>
         </details>
     </div>
+
+    <script>
+        const btn = document.getElementById('reconnectBtn');
+        const msg = document.getElementById('redirect-msg');
+        const countSpan = document.getElementById('countdown');
+        const targetUrl = "https://jankos.ch"; // HIER DEINE ECHTE DOMAIN EINTRAGEN
+
+        btn.addEventListener('click', () => {
+            btn.style.display = 'none'; // Button verstecken
+            msg.style.display = 'block'; // Nachricht zeigen
+            
+            let timeLeft = 3;
+            const timer = setInterval(() => {
+                timeLeft--;
+                countSpan.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    window.location.href = targetUrl;
+                }
+            }, 1000);
+        });
+
+        // Link im Text ebenfalls auf die Ziel-URL setzen
+        document.getElementById('manualLink').href = targetUrl;
+    </script>
 
 </body>
 </html>
