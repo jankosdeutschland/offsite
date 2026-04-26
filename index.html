@@ -30,12 +30,14 @@
             max-width: 220px;
             height: auto;
             margin-bottom: 25px;
+            /* Ein kleines bisschen nach links verschoben wie gewünscht */
+            position: relative;
+            left: -5px; 
         }
 
         h1 { color: #000880; margin-bottom: 12px; font-size: 26px; }
         p { color: #4b5563; line-height: 1.6; margin-bottom: 25px; }
 
-        /* Status Buttons */
         .status {
             display: inline-block;
             padding: 10px 20px;
@@ -47,7 +49,6 @@
         .status-update { background-color: #1d7e1d; color: white; }
         .status-down { background-color: #b91c1c; color: white; }
 
-        /* Der neue Reconnect-Button */
         .btn-reconnect {
             background-color: #0012ff;
             color: white;
@@ -66,10 +67,9 @@
             font-size: 14px;
             color: #2563eb;
             margin-top: 10px;
-            display: none; /* Erst beim Klick zeigen */
+            display: none;
         }
 
-        /* Details & Error Box */
         details { text-align: left; background: #f9fafb; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid #e5e7eb; margin-top: 20px;}
         summary { font-size: 14px; color: #6b7280; font-weight: 600; list-style: none; outline: none; }
         .error-box { margin-top: 10px; font-family: monospace; background: #2d2d2d; color: #39ff14; padding: 12px; border-radius: 8px; font-size: 12px; }
@@ -88,8 +88,7 @@
         <button class="btn-reconnect" id="reconnectBtn">Verbindung erneut prüfen</button>
         
         <div id="redirect-msg">
-            Du wirst in <span id="countdown">3</span> Sekunden weitergeleitet...<br>
-            <small>(Falls nichts passiert, <a href="https://jankos.ch" id="manualLink" style="color: #0012ff; font-weight: bold;">hier drücken</a>)</small>
+            Prüfung läuft... Seite wird in <span id="countdown">3</span>s neu geladen.
         </div>
 
         <details>
@@ -106,25 +105,23 @@
         const btn = document.getElementById('reconnectBtn');
         const msg = document.getElementById('redirect-msg');
         const countSpan = document.getElementById('countdown');
-        const targetUrl = "https://jankos.ch"; // HIER DEINE ECHTE DOMAIN EINTRAGEN
 
         btn.addEventListener('click', () => {
-            btn.style.display = 'none'; // Button verstecken
-            msg.style.display = 'block'; // Nachricht zeigen
+            btn.style.display = 'none'; 
+            msg.style.display = 'block'; 
             
             let timeLeft = 3;
             const timer = setInterval(() => {
                 timeLeft--;
                 countSpan.textContent = timeLeft;
+                
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    window.location.href = targetUrl;
+                    // Seite einfach neu laden
+                    location.reload();
                 }
             }, 1000);
         });
-
-        // Link im Text ebenfalls auf die Ziel-URL setzen
-        document.getElementById('manualLink').href = targetUrl;
     </script>
 
 </body>
