@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wartungsarbeiten | JANKOS</title>
+    <title>Status | JANKOS</title>
     <style>
         body { 
             font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background: linear-gradient(135deg, #f0f4ff 0%, #d9e2ff 100%);
         }
 
         .card { 
             background: white; 
-            padding: 50px 40px; 
+            padding: 40px; 
             border-radius: 28px; 
             box-shadow: 0 15px 35px rgba(0, 0, 80, 0.1);
             max-width: 450px;
@@ -27,35 +27,83 @@
         }
 
         .logo {
-            max-width: 250px;
+            max-width: 220px;
             height: auto;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         h1 { 
             color: #000880;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             font-size: 26px;
-            font-weight: 700;
         }
 
         p { 
             color: #4b5563; 
             line-height: 1.6;
-            margin-bottom: 30px;
-            font-size: 17px;
+            margin-bottom: 25px;
         }
 
+        /* Status Buttons */
         .status {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #1d7e1d;
-            color: white;
             border-radius: 50px;
             font-size: 14px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* Dein grüner Update-Status */
+        .status-update {
+            background-color: #1d7e1d;
+            color: white;
+        }
+
+        /* Der neue rote Server-Down Status */
+        .status-down {
+            background-color: #b91c1c;
+            color: white;
+        }
+
+        /* Ausklappbarer Bereich (Details) */
+        details {
+            text-align: left;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+
+        summary {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 600;
+            outline: none;
+            list-style: none; /* Versteckt Standard-Pfeil */
+        }
+
+        summary::-webkit-details-marker { display: none; } /* Safari Support */
+
+        summary::before {
+            content: "▶ ";
+            font-size: 10px;
+        }
+
+        details[open] summary::before {
+            content: "▼ ";
+        }
+
+        .error-box {
+            margin-top: 10px;
+            font-family: monospace;
+            background: #2d2d2d;
+            color: #39ff14; /* Matrix-Grün für den Code-Look */
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            overflow-x: auto;
         }
     </style>
 </head>
@@ -65,9 +113,18 @@
         <img src="https://raw.githubusercontent.com/jankosdeutschland/offsite/main/Jankos%20Logo%20(1).png" alt="JANKOS Logo" class="logo">
         
         <h1>Gleich wieder da!</h1>
-        <p>Wir optimieren gerade unsere Website für dich. JANKOS ist in Kürze wieder mit vollem Service erreichbar.</p>
+        <p>Wir haben gerade ein technisches Problem oder führen Wartungsarbeiten durch. Wir sind bald wieder für dich da.</p>
         
-        <div class="status">System-Update aktiv</div>
+        <div class="status status-down">Server Offline</div>
+
+        <details>
+            <summary>Technische Details anzeigen</summary>
+            <div class="error-box">
+                Error-Code: 522<br>
+                Status: Connection Timeout<br>
+                Server: JANKOS-Main-Node
+            </div>
+        </details>
     </div>
 
 </body>
