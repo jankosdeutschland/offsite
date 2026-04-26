@@ -123,16 +123,29 @@
         const randomHex = Math.floor(Math.random()*65535).toString(16).toUpperCase();
         document.getElementById('traceId').textContent = "JNK-WR-" + randomHex;
 
-        // 2. IP und Standort abrufen
-        fetch('https://ipapi.co/json/')
-            .then(response => response.json())
+        // 2. IP und Standort abrufen (Verbesserte Methode)
+        // Wir nutzen hier einen extrem schnellen, alternativen Dienst
+        fetch('https://ipinfo.io/json?token=') // Nutzt ipinfo ohne Token für Basis-Daten
+            .then(response => {
+                if (!response.ok) throw new Error();
+                return response.json();
+            })
             .then(data => {
-                document.getElementById('clientIp').textContent = data.ip;
-                document.getElementById('clientLoc').textContent = data.city + ", " + data.country_name;
+                document.getElementById('clientIp').textContent = data.ip || "Unknown";
+                document.getElementById('clientLoc').textContent = (data.city && data.country) ? data.city + ", " + data.country : "External Node";
             })
             .catch(() => {
-                document.getElementById('clientIp').textContent = "Unknown";
-                document.getElementById('clientLoc').textContent = "Secure Node";
+                // Zweiter Versuch mit einem Fallback-Dienst
+                fetch('https://api.ipify.org?format=json')
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('clientIp').textContent = data.ip;
+                        document.getElementById('clientLoc').textContent = "Remote Access Node";
+                    })
+                    .catch(() => {
+                        document.getElementById('clientIp').textContent = "127.0.0.1 (Proxy)";
+                        document.getElementById('clientLoc').textContent = "VPN/Secure Node";
+                    });
             });
 
         // 3. Spinner Animation
